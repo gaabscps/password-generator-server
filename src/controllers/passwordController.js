@@ -2,6 +2,50 @@ import password from "../models/Password.js";
 import { platform } from "../models/Platform.js";
 
 class PasswordController {
+  static async generateRandomPassword(req, res) {
+    const length = req.query.length || 8;
+    const uppercase = req.query.uppercase || false;
+    const lowercase = req.query.lowercase || false;
+    const numbers = req.query.numbers || false;
+    const symbols = req.query.symbols || false;
+
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const numberChars = "0123456789";
+    const symbolChars = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+
+    let allChars = "";
+    let password = "";
+
+    if (uppercase) {
+      allChars += uppercaseChars;
+      password +=
+        uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+    }
+
+    if (lowercase) {
+      allChars += lowercaseChars;
+      password +=
+        lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+    }
+
+    if (numbers) {
+      allChars += numberChars;
+      password += numberChars[Math.floor(Math.random() * numberChars.length)];
+    }
+
+    if (symbols) {
+      allChars += symbolChars;
+      password += symbolChars[Math.floor(Math.random() * symbolChars.length)];
+    }
+
+    for (let i = password.length; i < length; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+
+    res.status(200).json({ password });
+  }
+
   static async listPassword(req, res) {
     try {
       // Get all passwords
