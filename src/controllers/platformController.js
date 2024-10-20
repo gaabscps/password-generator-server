@@ -1,63 +1,53 @@
 import { platform } from "../models/Platform.js";
 
 class PlatformController {
-  static async listPlatform(req, res) {
+  static async listPlatform(req, res, next) {
     try {
       const platformList = await platform.find({});
       res.status(200).json(platformList);
     } catch (error) {
-      res
-        .status(500)
-        .status.json({ message: `${error.message} - Failed to get platforms` });
+      next(error);
     }
   }
 
-  static async addPlatform(req, res) {
+  static async addPlatform(req, res, next) {
     try {
       const newPlatform = await platform.create(req.body);
       res
         .status(201)
         .json({ message: "Platform created", platform: newPlatform });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to add platform` });
+      next(error);
     }
   }
 
-  static async getPlatformById(req, res) {
+  static async getPlatformById(req, res, next) {
     try {
       const id = req.params.id;
       const platformById = await platform.findById(id);
       res.status(200).json(platformById);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to get platform by id` });
+      next(error);
     }
   }
 
-  static async updatePlatform(req, res) {
+  static async updatePlatform(req, res, next) {
     try {
       const id = req.params.id;
       await platform.findByIdAndUpdate(id, req.body);
       res.status(200).json({ message: "Platform updated" });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to update platform` });
+      next(error);
     }
   }
 
-  static async deletePlatform(req, res) {
+  static async deletePlatform(req, res, next) {
     try {
       const id = req.params.id;
       await platform.findByIdAndDelete(id);
       res.status(200).json({ message: "Platform deleted" });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to delete platform` });
+      next(error);
     }
   }
 }

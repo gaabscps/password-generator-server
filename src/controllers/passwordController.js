@@ -46,19 +46,17 @@ class PasswordController {
     res.status(200).json({ password });
   }
 
-  static async listPassword(req, res) {
+  static async listPassword(req, res, next) {
     try {
       // Get all passwords
       const passwordList = await password.find({});
       res.status(200).json(passwordList);
     } catch (error) {
-      res
-        .status(500)
-        .status.json({ message: `${error.message} - Failed to get passwords` });
+      next(error);
     }
   }
 
-  static async addPassword(req, res) {
+  static async addPassword(req, res, next) {
     const newPassword = req.body;
     try {
       const platformFound = await platform.findById(newPassword.platform);
@@ -74,25 +72,21 @@ class PasswordController {
         .status(201)
         .json({ message: "Password created", password: passwordCreated });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to add password` });
+      next(error);
     }
   }
 
-  static async getPasswordById(req, res) {
+  static async getPasswordById(req, res, next) {
     try {
       const id = req.params.id;
       const passwordById = await password.findById(id);
       res.status(200).json(passwordById);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to get password by id` });
+      next(error);
     }
   }
 
-  static async updatePassword(req, res) {
+  static async updatePassword(req, res, next) {
     const newPassword = req.body;
     const id = req.params.id;
     try {
@@ -124,25 +118,21 @@ class PasswordController {
       await password.findByIdAndUpdate(id, passwordBody);
       res.status(200).json({ message: "Password updated" });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Failed to update password - " + error.message });
+      next(error);
     }
   }
 
-  static async deletePassword(req, res) {
+  static async deletePassword(req, res, next) {
     try {
       const id = req.params.id;
       await password.findByIdAndDelete(id);
       res.status(200).json({ message: "Password deleted" });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - Failed to delete password` });
+      next(error);
     }
   }
 
-  static async listPasswordByPlatform(req, res) {
+  static async listPasswordByPlatform(req, res, next) {
     const platformId = req.query.platform;
 
     try {
@@ -151,12 +141,7 @@ class PasswordController {
       });
       res.status(200).json(passwordByPlatform);
     } catch (error) {
-      console.error(
-        `Error fetching passwords for platform ${platformId}: ${error.message}`
-      );
-      res.status(500).json({
-        message: `${error.message} - Failed to get password by platform`,
-      });
+      next(error);
     }
   }
 }
