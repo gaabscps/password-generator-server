@@ -4,6 +4,7 @@ import { platform } from "../models/Platform.js";
 class PasswordController {
   static async listPassword(req, res) {
     try {
+      // Get all passwords
       const passwordList = await password.find({});
       res.status(200).json(passwordList);
     } catch (error) {
@@ -17,10 +18,12 @@ class PasswordController {
     const newPassword = req.body;
     try {
       const platformFound = await platform.findById(newPassword.platform);
-      const passwordBody = {
-        ...newPassword,
-        platform: { ...platformFound._doc },
-      };
+      const passwordBody = platformFound?._doc
+        ? {
+            ...newPassword,
+            platform: { ...platformFound._doc },
+          }
+        : { ...newPassword };
 
       const passwordCreated = await password.create(passwordBody);
       res
@@ -46,10 +49,8 @@ class PasswordController {
   }
 
   static async updatePassword(req, res) {
-    const {
-      body: newPassword,
-      params: { id },
-    } = req;
+    const newPassword = req.body;
+    const id = req.params.id;
     try {
       // Validate required fields
       if (!newPassword || !id) {
@@ -66,7 +67,7 @@ class PasswordController {
       let passwordBody = newPassword;
       if (
         newPassword.platform &&
-        newPassword.platform !== currentPassword.platform._id.toString()
+        newPassword.platform !== currentPassword.platform?._id.toString()
       ) {
         const platformFound = await platform.findById(newPassword.platform);
         if (!platformFound) {
@@ -94,6 +95,24 @@ class PasswordController {
       res
         .status(500)
         .json({ message: `${error.message} - Failed to delete password` });
+    }
+  }
+
+  static async listPasswordByPlatform(req, res) {
+    const platformId = req.query.platform;
+
+    try {
+      const passwordByPlatform = await password.find({
+        "platform._id": platformId,
+      });
+      res.status(200).json(passwordByPlatform);
+    } catch (error) {
+      console.error(
+        `Error fetching passwords for platform ${platformId}: ${error.message}`
+      );
+      res.status(500).json({
+        message: `${error.message} - Failed to get password by platform`,
+      });
     }
   }
 }
