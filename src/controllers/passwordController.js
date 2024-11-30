@@ -48,6 +48,7 @@ class PasswordController {
   }
 
   static async listPassword(req, res, next) {
+    // "/password"
     try {
       // Get all passwords
       const passwordList = await password.find({});
@@ -58,6 +59,13 @@ class PasswordController {
   }
 
   static async addPassword(req, res, next) {
+    // "/password"
+    // "body": {
+    //   "platform": "60e1c6a0b4f2f0a4b4b0b7e3", // Platform ID
+    //   "username": "user",
+    //   "password": "password"
+    // }
+
     //TODO: Handle Errors
     const newPassword = req.body;
     try {
@@ -79,6 +87,7 @@ class PasswordController {
   }
 
   static async getPasswordById(req, res, next) {
+    // "/password/:id"
     try {
       const id = req.params.id;
       if (id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -91,6 +100,13 @@ class PasswordController {
   }
 
   static async updatePassword(req, res, next) {
+    // "/password/:id"
+    // "body": {
+    //   "platform": "60e1c6a0b4f2f0a4b4b0b7e3", // Platform ID
+    //   "username": "user",
+    //   "password": "password"
+    // }
+
     const id = req.params.id;
     const newPassword = req.body;
 
@@ -127,6 +143,7 @@ class PasswordController {
   }
 
   static async deletePassword(req, res, next) {
+    // "/password/:id"
     //TODO: Handle Errors
     try {
       const id = req.params.id;
@@ -138,6 +155,7 @@ class PasswordController {
   }
 
   static async listPasswordByPlatform(req, res, next) {
+    // "/password/filter?platform=platformId"
     //TODO: Handle Errors
     const platformId = req.query.platform;
 

@@ -3,6 +3,7 @@ import InvalidData from "../errors/InvalidData.js";
 
 class PlatformController {
   static async listPlatform(req, res, next) {
+    // "/platform?itemPerPage=5&page=1&sorting=_id:-1"
     try {
       let { itemPerPage = 5, page = 1, sorting = "_id:-1" } = req.query;
       let [sortingField, sort] = sorting.split(":");
@@ -27,6 +28,7 @@ class PlatformController {
   }
 
   static async addPlatform(req, res, next) {
+    // "/platform"
     //TODO: Handle Errors
     try {
       const newPlatform = await platform.create(req.body);
@@ -39,6 +41,7 @@ class PlatformController {
   }
 
   static async getPlatformById(req, res, next) {
+    // "/platform/:id"
     //TODO: Handle Errors
     try {
       const id = req.params.id;
@@ -50,6 +53,7 @@ class PlatformController {
   }
 
   static async updatePlatform(req, res, next) {
+    // "/platform/:id"
     //TODO: Handle Errors
     try {
       const id = req.params.id;
@@ -61,6 +65,7 @@ class PlatformController {
   }
 
   static async deletePlatform(req, res, next) {
+    // "/platform/:id"
     //TODO: Handle Errors
     try {
       const id = req.params.id;
@@ -72,6 +77,7 @@ class PlatformController {
   }
 
   static async filterPlatform(req, res, next) {
+    // "/platform/filter?name=name"
     try {
       const { name } = req.query;
 
