@@ -1,10 +1,23 @@
 import { platform } from "../models/index.js";
+import InvalidData from "../errors/InvalidData.js";
 
 class PlatformController {
   static async listPlatform(req, res, next) {
     try {
-      const platformList = await platform.find({});
-      res.status(200).json(platformList);
+      let { itemPerPage = 5, page = 1 } = req.query;
+
+      itemPerPage = parseInt(itemPerPage);
+      page = parseInt(page);
+
+      if (itemPerPage > 0 && page > 0) {
+        const platformList = await platform
+          .find({})
+          .skip(itemPerPage * (page - 1))
+          .limit(itemPerPage);
+        res.status(200).json(platformList);
+      } else {
+        next(new InvalidData());
+      }
     } catch (error) {
       next(error);
     }
@@ -60,9 +73,7 @@ class PlatformController {
       const { name } = req.query;
 
       if (!name) {
-        return res
-          .status(400)
-          .json({ message: "Name query parameter is required" });
+        return res.status(400).json({ message: "Params 'name' not found" });
       }
 
       const platformFound = await platform.findOne({
