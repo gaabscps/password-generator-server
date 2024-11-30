@@ -1,7 +1,6 @@
 import NotFound from "../errors/NotFound.js";
-import password from "../models/Password.js";
-import InvalidData from "../errors/InvalidData.js";
-import { platform } from "../models/Platform.js";
+import { password } from "../models/index.js";
+import { platform } from "../models/index.js";
 
 class PasswordController {
   static async generateRandomPassword(req, res) {

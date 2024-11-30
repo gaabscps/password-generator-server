@@ -7,6 +7,7 @@ routes.get("/platforms", PlatformController.listPlatform);
 routes.get("/platforms/:id", PlatformController.getPlatformById);
 
 routes.post("/platforms", PlatformController.addPlatform);
+routes.post("/platforms/search", PlatformController.filterPlatform);
 
 routes.put("/platforms/:id", PlatformController.updatePlatform);
 
