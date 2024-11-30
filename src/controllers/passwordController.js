@@ -1,4 +1,6 @@
+import NotFound from "../errors/NotFound.js";
 import password from "../models/Password.js";
+import InvalidData from "../errors/InvalidData.js";
 import { platform } from "../models/Platform.js";
 
 class PasswordController {
@@ -57,6 +59,7 @@ class PasswordController {
   }
 
   static async addPassword(req, res, next) {
+    //TODO: Handle Errors
     const newPassword = req.body;
     try {
       const platformFound = await platform.findById(newPassword.platform);
@@ -79,43 +82,45 @@ class PasswordController {
   static async getPasswordById(req, res, next) {
     try {
       const id = req.params.id;
-      const passwordById = await password.findById(id);
-      res.status(200).json(passwordById);
+      if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        const passwordById = await password.findById(id);
+        res.status(200).json(passwordById);
+      } else next(new NotFound("Password not found"));
     } catch (error) {
       next(error);
     }
   }
 
   static async updatePassword(req, res, next) {
-    const newPassword = req.body;
     const id = req.params.id;
+    const newPassword = req.body;
+
     try {
-      // Validate required fields
-      if (!newPassword || !id) {
-        return res.status(400).json({ message: "Missing required fields" });
+      // Validate ID format
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return next(new NotFound("Id "));
       }
 
-      // Verify if password exists and get current password
+      // Verify if password exists
       const currentPassword = await password.findById(id);
       if (!currentPassword) {
         return res.status(404).json({ message: "Password not found" });
       }
 
-      // verify if platform exists and update password with platform
-      let passwordBody = newPassword;
+      // Handle platform update if necessary
       if (
         newPassword.platform &&
-        newPassword.platform !== currentPassword.platform?._id.toString()
+        newPassword.platform !== currentPassword.platform?.toString()
       ) {
         const platformFound = await platform.findById(newPassword.platform);
         if (!platformFound) {
           return res.status(404).json({ message: "Platform not found" });
         }
-        passwordBody = { ...newPassword, platform: platformFound._doc };
+        newPassword.platform = platformFound;
       }
 
       // Update password
-      await password.findByIdAndUpdate(id, passwordBody);
+      await password.findByIdAndUpdate(id, newPassword, { new: true });
       res.status(200).json({ message: "Password updated" });
     } catch (error) {
       next(error);
@@ -123,6 +128,7 @@ class PasswordController {
   }
 
   static async deletePassword(req, res, next) {
+    //TODO: Handle Errors
     try {
       const id = req.params.id;
       await password.findByIdAndDelete(id);
@@ -133,6 +139,7 @@ class PasswordController {
   }
 
   static async listPasswordByPlatform(req, res, next) {
+    //TODO: Handle Errors
     const platformId = req.query.platform;
 
     try {

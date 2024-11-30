@@ -4,7 +4,7 @@ import { PlatformSchema } from "../models/Platform.js";
 const passwordSchema = new mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
-    password: { type: String, required: true },
+    password: { type: String },
     platform: PlatformSchema,
     auth2fa: { type: Boolean },
   },

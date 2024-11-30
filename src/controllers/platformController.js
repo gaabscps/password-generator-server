@@ -11,6 +11,7 @@ class PlatformController {
   }
 
   static async addPlatform(req, res, next) {
+    //TODO: Handle Errors
     try {
       const newPlatform = await platform.create(req.body);
       res
@@ -22,6 +23,7 @@ class PlatformController {
   }
 
   static async getPlatformById(req, res, next) {
+    //TODO: Handle Errors
     try {
       const id = req.params.id;
       const platformById = await platform.findById(id);
@@ -32,6 +34,7 @@ class PlatformController {
   }
 
   static async updatePlatform(req, res, next) {
+    //TODO: Handle Errors
     try {
       const id = req.params.id;
       await platform.findByIdAndUpdate(id, req.body);
@@ -42,6 +45,7 @@ class PlatformController {
   }
 
   static async deletePlatform(req, res, next) {
+    //TODO: Handle Errors
     try {
       const id = req.params.id;
       await platform.findByIdAndDelete(id);
