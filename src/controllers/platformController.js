@@ -1,27 +1,13 @@
 import { platform } from "../models/index.js";
-import InvalidData from "../errors/InvalidData.js";
-
 class PlatformController {
   static async listPlatform(req, res, next) {
     // "/platform?itemPerPage=5&page=1&sorting=_id:-1"
     try {
-      let { itemPerPage = 5, page = 1, sorting = "_id:-1" } = req.query;
-      let [sortingField, sort] = sorting.split(":");
+      const searchPlatform = platform.find();
 
-      itemPerPage = parseInt(itemPerPage);
-      page = parseInt(page);
-      sort = parseInt(sort);
+      req.result = searchPlatform;
 
-      if (itemPerPage > 0 && page > 0) {
-        const platformList = await platform
-          .find({})
-          .sort({ [sortingField]: sort })
-          .skip(itemPerPage * (page - 1))
-          .limit(itemPerPage);
-        res.status(200).json(platformList);
-      } else {
-        next(new InvalidData());
-      }
+      next();
     } catch (error) {
       next(error);
     }

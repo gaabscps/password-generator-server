@@ -48,11 +48,12 @@ class PasswordController {
   }
 
   static async listPassword(req, res, next) {
-    // "/password"
+    // "/password?itemPerPage=5&page=1&sorting=_id:-1"
     try {
       // Get all passwords
-      const passwordList = await password.find({});
-      res.status(200).json(passwordList);
+      const passwordList = password.find({});
+      req.result = passwordList;
+      next();
     } catch (error) {
       next(error);
     }
